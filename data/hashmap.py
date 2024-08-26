@@ -2,6 +2,17 @@ import csv
 
 
 class HashMap:
+    # Define global variables for hashmap
+    ADDRESS = 0
+    CITY = 1
+    STATE = 2
+    ZIP = 3
+    DEADLINE = 4
+    WEIGHT = 5
+    STATUS = 6
+    TIME_DELIVERED = 7
+    NOTES = 8
+
     def __init__(self):
         self.size = 64  # Initial size of hash map
         self.map = [None] * self.size
@@ -61,6 +72,53 @@ class HashMap:
                 break
 
         return None
+
+    def get_package_data(self, key):
+        """Get package data as a dictionary with named fields"""
+        data = self.get(key)
+        if data:
+            address = data[self.ADDRESS]
+            city = data[self.CITY]
+            state = data[self.STATE]
+            zip = data[self.ZIP]
+            deadline = data[self.DEADLINE]
+            weight = data[self.WEIGHT]
+            status = data[self.STATUS]
+            time_delivered = data[self.TIME_DELIVERED]
+            notes = data[self.NOTES]
+
+            # Return as a dictionary of values
+            return {
+                "address": address, "city": city,"state": state,
+                "zip": zip, "deadline": deadline,"weight(kg)": weight,
+                "status": status,"time_delivered": time_delivered,
+                "notes": notes,
+            }
+        return None
+
+    def display_package_data(self, key):
+        package_data = self.get_package_data(key)
+        if package_data:
+            print(f"\nPackage ID: {key}")
+            for field, value in package_data.items():
+                print(f"{field.capitalize()}: {value}")
+
+    def update_status(self, key, new_status):
+        """Update the status of a package"""
+        data = self.get(key)
+        if data:
+            # Update status
+            data[self.STATUS] = new_status
+            # Update hashmap with new data
+            self.put(key, data)
+
+    def update_time_delivered(self, key, time_delivered):
+        data = self.get(key)
+        if data:
+            # Update delivery time
+            data[self.TIME_DELIVERED] = time_delivered
+            # Update hashmap with new data
+            self.put(key, data)
 
     def display(self):
         """Display hashmap for debugging purposes."""
