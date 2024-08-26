@@ -21,6 +21,9 @@ class HashMap:
 
     def _hash(self, key):
         """hash function to compute hash index."""
+        # 'hash' function returns an integer hash value for a given key.
+        # % is a modulus operator to ensure the hash value fits within bounds of array.
+        # self.size represents the current capacity of the hashmap.
         return hash(key) % self.size
 
     def _resize(self):
