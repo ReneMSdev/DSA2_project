@@ -18,6 +18,20 @@ class HashMap:
         self.map = [None] * self.size
         self.count = 0  # Number of elements in the hashmap
         self.resize_threshold = 0.7  # Resize hashmap when 70% full
+        self._load_data_into_hashmap()
+
+    def _load_data_into_hashmap(self):
+        """Read CSV file and load contents into hashmap"""
+        file_path = 'csv_files/WGUPS Package File.csv'
+
+        with open(file_path, 'r') as file:
+            csv_reader = csv.reader(file)
+
+            for row in csv_reader:
+                package_id = row[0]  # First Column used for package_id.
+                data = row[1:]  # The remaining Columns is where the data will be stored.
+                self.put(package_id, data)
+        print("Data loaded into HashMap.")
 
     def _hash(self, key):
         """hash function to compute hash index."""
@@ -131,15 +145,6 @@ class HashMap:
             else:
                 print(f"Index {index}: Empty")
 
-    def load_data_into_hashmap(self):
-        """Read CSV file and load contents into hashmap"""
-        file_path = 'data/csv_files/WGUPS Package File.csv'
-
-        with open(file_path, 'r') as file:
-            csv_reader = csv.reader(file)
-
-            for row in csv_reader:
-                package_id = row[0]  # First Column used for package_id.
-                data = row[1:]  # The remaining Columns is where the data will be stored.
-                self.put(package_id, data)
-        print("Data loaded into HashMap.")
+""" Testing """
+# map = HashMap()
+# print(map.get_package_data("1"))

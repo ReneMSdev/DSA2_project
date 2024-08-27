@@ -73,7 +73,9 @@ class DistanceCalculator:
 
 """ testing """
 # dc = DistanceCalculator()
+# print(dc.cleaned_addresses)
+# print(dc.adjacency_matrix)
 # address_one = "4001 South 700 East"
-# address_two = "1488 4800 S"
+# address_two = "5025 State St"
 # distance = dc.get_distance(address_one, address_two)
 # print(distance)

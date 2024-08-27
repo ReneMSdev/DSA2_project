@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+
 class Truck:
     def __init__(self, truck_id, package_data):
         self.truck_id = truck_id
