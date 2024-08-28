@@ -28,15 +28,24 @@ truck3 = Truck(3, package_data, timestamps)
 
 
 """ Testing """
-truck1.load_packages(["1","2","3"])
-truck2.load_packages(["4","5","6"])
 
-route1 = truck1.calculate_route()
-route2 = truck2.calculate_route()
-truck1.deliver_all_packages(route1)
-truck2.deliver_all_packages(route2)
+"""Load Packages"""
+
+# Divide the packages between the trucks (roughly 13 packages per truck)
+truck1.load_packages(["1", "2", "3"])
+truck2.load_packages(["4", "5", "6"])
+# truck3.load_packages(["7", "8", "9"])
+
+print(package_data.get_package_data("1"))
+print(package_data.get_package_data("2"))
+print(package_data.get_package_data("3"))
+print(package_data.get_package_data("4"))
+print(package_data.get_package_data("5"))
+print(package_data.get_package_data("6"))
 
 lookup_time = "08:25 AM"
 lookup_status(timestamps, lookup_time)
-# print(package_data.display())
+
+
+
 

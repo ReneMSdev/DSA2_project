@@ -1,14 +1,13 @@
 from data.distance_calculator import DistanceCalculator
-from data.hashmap import HashMap
 
 
 class NearestNeighbor:
     # global variables
     HUB = "4001 South 700 East"
 
-    def __init__(self):
+    def __init__(self, hashmap):
         self.dc = DistanceCalculator()
-        self.hashmap = HashMap()
+        self.hashmap = hashmap
 
     def calculate_route(self, package_list):
         # initialize starting point
@@ -23,20 +22,23 @@ class NearestNeighbor:
 
             for package_id in package_list:
                 package_data = self.hashmap.get_package_data(package_id)
-                if package_data:
-                    address = package_data["address"]
+                if not package_data:
+                    print(f"Package data for package {package_id} not found.")
+                    continue
 
-                    # Skip if already visited(if multiple packages assigned to same address)
-                    if address in visited:
-                        continue
+                address = package_data["address"]
 
-                    # Calculate distance from current address to this address
-                    distance = self.dc.get_distance(current_address, address)
+                # Skip if already visited(if multiple packages assigned to same address)
+                if address in visited:
+                    continue
 
-                    # Check if this address is the nearest
-                    if distance < shortest_distance:
-                        shortest_distance = distance
-                        nearest_address = address
+                # Calculate distance from current address to this address
+                distance = self.dc.get_distance(current_address, address)
+
+                # Check if this address is the nearest
+                if distance is not None and distance < shortest_distance:
+                    shortest_distance = distance
+                    nearest_address = address
 
             # Update route and visited addresses
             if nearest_address:
@@ -44,6 +46,10 @@ class NearestNeighbor:
                 visited.add(nearest_address)
                 total_distance += shortest_distance
                 current_address = nearest_address  # Move to the next address
+                # print(f"Nearest address found: {nearest_address} with distance: {shortest_distance}")
+            else:
+                print("Nearest address not found")
+                break
 
         return route, total_distance
 
