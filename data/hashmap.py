@@ -22,16 +22,17 @@ class HashMap:
 
     def _load_data_into_hashmap(self):
         """Read CSV file and load contents into hashmap"""
-        file_path = 'csv_files/WGUPS Package File.csv'
+        file_path = 'data/csv_files/WGUPS Package File.csv'
 
         with open(file_path, 'r') as file:
             csv_reader = csv.reader(file)
 
             for row in csv_reader:
-                package_id = row[0]  # First Column used for package_id.
-                data = row[1:]  # The remaining Columns is where the data will be stored.
-                self.put(package_id, data)
-        print("Data loaded into HashMap.")
+                package_id = row[0].strip()  # First Column used for package_id.
+
+                if package_id.isdigit():  # Check if package_id is numeric to avoid errors.
+                    data = row[1:]  # The remaining Columns is where the data will be stored.
+                    self.put(package_id, data)
 
     def _hash(self, key):
         """hash function to compute hash index."""
@@ -97,7 +98,7 @@ class HashMap:
             address = data[self.ADDRESS]
             city = data[self.CITY]
             state = data[self.STATE]
-            zip = data[self.ZIP]
+            zip_code = data[self.ZIP]
             deadline = data[self.DEADLINE]
             weight = data[self.WEIGHT]
             status = data[self.STATUS]
@@ -107,7 +108,7 @@ class HashMap:
             # Return as a dictionary of values
             return {
                 "address": address, "city": city,"state": state,
-                "zip": zip, "deadline": deadline,"weight(kg)": weight,
+                "zip": zip_code, "deadline": deadline,"weight(kg)": weight,
                 "status": status,"time_delivered": time_delivered,
                 "notes": notes,
             }
@@ -144,6 +145,7 @@ class HashMap:
                 print(f"Index {index}: {item}")
             else:
                 print(f"Index {index}: Empty")
+
 
 """ Testing """
 # map = HashMap()

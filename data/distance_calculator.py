@@ -4,7 +4,7 @@ import numpy as np
 
 class DistanceCalculator:
     def __init__(self):
-        self.file_path = 'csv_files/WGUPS Distance Table.csv'
+        self.file_path = 'data/csv_files/WGUPS Distance Table.csv'
         self.address_to_index = {}
         self.adjacency_matrix = None
         self.cleaned_addresses = []

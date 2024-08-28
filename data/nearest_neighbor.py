@@ -3,13 +3,16 @@ from data.hashmap import HashMap
 
 
 class NearestNeighbor:
+    # global variables
+    HUB = "4001 South 700 East"
+
     def __init__(self):
         self.dc = DistanceCalculator()
         self.hashmap = HashMap()
 
     def calculate_route(self, package_list):
         # initialize starting point
-        current_address = "4001 South 700 East"
+        current_address = self.HUB
         route = []  # Initialize route array
         visited = set(route)  # Set to keep track of visited addresses
         total_distance = 0  # total distance traveled
