@@ -1,9 +1,12 @@
+from email.headerregistry import Address
+
 from data.distance_calculator import DistanceCalculator
 
 
 class NearestNeighbor:
     # global variables
     HUB = "4001 South 700 East"
+    ADDRESS = 0
 
     def __init__(self, hashmap):
         self.dc = DistanceCalculator()
@@ -26,7 +29,7 @@ class NearestNeighbor:
                     print(f"Package data for package {package_id} not found.")
                     continue
 
-                address = package_data["address"]
+                address = package_data[self.ADDRESS]  # Index for Address
 
                 # Skip if already visited(if multiple packages assigned to same address)
                 if address in visited:
