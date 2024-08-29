@@ -5,15 +5,14 @@ from data.nearest_neighbor import NearestNeighbor
 class Truck:
     # Global variable(s)
     HUB = "4001 South 700 East"
+    LOCATION = 1
 
-    """add input here so all trucks use the same package data!!!"""
     def __init__(self, truck_id, package_data, start_time):
         self.truck_id = truck_id
         self.packages = []  # List to store Package IDs loaded onto truck
         self.start_time = start_time
         # Fixed start time as a datetime object ^^^
         self.current_time = self.start_time  # Initialize current time with start time
-
         self.current_location = self.HUB  # Starting location (HUB)
         self.distance_traveled = 0
         self.speed = 18  # Truck speed in miles per hour
@@ -24,27 +23,22 @@ class Truck:
         """Load all packages onto truck from list of package IDs"""
         self.packages = package_list  # Load packages from package_list
 
-        # Update the status of package
+        # Update the time_loaded of package
         for package_id in package_list:
-            self.hashmap.update_status(package_id, "ENROUTE")
             self.hashmap.update_time_loaded(package_id, self.current_time.strftime("%I:%M %p"))
+            self.hashmap.update_truck_id(package_id, self.truck_id)
 
         route = self.calculate_route()  # calculate route once packages are loaded
         self.deliver_all_packages(route)  # deliver all packages after optimal calculating route
 
     def deliver_package(self, package_id):
-        """Deliver a package and update its status and delivery time"""
-        new_status = "DELIVERED"
-
+        """Deliver a package and update delivery time"""
         if package_id in self.packages:
             delivery_time = self.current_time.strftime("%I:%M %p")  # current time string
 
-            # Update status and delivery time
-            self.hashmap.update_status(package_id, new_status)
+            # Update delivery time
             self.hashmap.update_time_delivered(package_id, delivery_time)
-
-            # Take snapshot upon delivery
-            print(f"Package {package_id} delivered at {delivery_time}")
+            # print(f"Package {package_id} delivered at {delivery_time}")
 
     def calculate_travel_time(self, distance):
         # Calculate the time to travel the given distance at current speed
@@ -76,9 +70,9 @@ class Truck:
 
                 # Deliver all packages at current location
                 for package_id in self.packages:
-                    package_data = self.hashmap.get_package_data(package_id)
+                    package_data = self.hashmap.get(package_id)
                     # if there is package data and the address matches location continue with delivery
-                    if package_data and package_data[0] == location:
+                    if package_data and package_data[self.LOCATION] == location:
                         self.deliver_package(package_id)  # Deliver the package
 
         # Call return_to_hub after delivering all packages

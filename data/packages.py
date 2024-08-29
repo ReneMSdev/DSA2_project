@@ -3,13 +3,13 @@ import csv
 
 class Packages:
     # Define global variables for hashmap
-    ADDRESS = 0
-    CITY = 1
-    STATE = 2
-    ZIP = 3
-    DEADLINE = 4
-    WEIGHT = 5
-    STATUS = 6
+    PACKAGE_ID = 0
+    ADDRESS = 1
+    CITY = 2
+    STATE = 3
+    ZIP = 4
+    DEADLINE = 5
+    WEIGHT = 6
     TIME_LOADED = 7
     TIME_DELIVERED = 8
     NOTES = 9
@@ -29,10 +29,10 @@ class Packages:
             csv_reader = csv.reader(file)
 
             for row in csv_reader:
-                package_id = row[0].strip()  # First Column used for package_id.
+                package_id = row[self.PACKAGE_ID].strip()  # First Column used for package_id.
 
                 if package_id.isdigit():  # Check if package_id is numeric to avoid errors.
-                    data = row[1:]  # The remaining Columns is where the data will be stored.
+                    data = row[:]  # Store all data from each column
                     self.insert(package_id, data)
 
     def _hash(self, package_id):
@@ -60,7 +60,7 @@ class Packages:
         original_index = index
 
         while self.map[index] is not None:
-            if self.map[index][0] == package_id:
+            if self.map[index][self.PACKAGE_ID] == package_id:
                 # Update data if package_id already exists
                 self.map[index] = (package_id, data)
                 return
@@ -84,27 +84,24 @@ class Packages:
         original_index = index
 
         while self.map[index] is not None:
-            if self.map[index][0] == package_id:
-                return self.map[index][1]
+            if self.map[index][self.PACKAGE_ID] == package_id:
+                return self.map[index][1]  # 1 is index for data
             index = (index + 1) % self.size
             if index == original_index:
                 break
 
         return None
 
-    def get_package_data(self, package_id):
-        """Get package data as a list of fields"""
-        data = self.get(package_id)
-        return data
+    def get_all_packages(self):
+        """ Return all non-None packages """
+        all_packages = []
+        for entry in self.map:
+            if entry is not None:
+                all_packages.append(entry[1])  # entry[1] contains package data
 
-    def update_status(self, package_id, new_status):
-        """Update the status of a package"""
-        data = self.get(package_id)
-        if data:
-            # Update status
-            data[self.STATUS] = new_status
-            # Update hashmap with new data
-            self.insert(package_id, data)
+        # Sort all packages by package ID
+        all_packages.sort(key=lambda package: int(package[self.PACKAGE_ID]))
+        return all_packages
 
     def update_time_loaded(self, package_id, time_loaded):
         """Update the time loaded"""
@@ -121,6 +118,14 @@ class Packages:
             # Update delivery time
             data[self.TIME_DELIVERED] = time_delivered
             # Update hashmap with new data
+            self.insert(package_id, data)
+
+    def update_truck_id(self, package_id, truck_id):
+        """ Update the truck ID for a package """
+        data = self.get(package_id)
+        if data:
+            # Update the truck id
+            data.append(truck_id)
             self.insert(package_id, data)
 
     def display(self):

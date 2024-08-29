@@ -1,12 +1,10 @@
-from email.headerregistry import Address
-
 from data.distance_calculator import DistanceCalculator
 
 
 class NearestNeighbor:
     # global variables
     HUB = "4001 South 700 East"
-    ADDRESS = 0
+    ADDRESS = 1
 
     def __init__(self, hashmap):
         self.dc = DistanceCalculator()
@@ -24,7 +22,7 @@ class NearestNeighbor:
             shortest_distance = float('inf')  # Start with infinitely large distance
 
             for package_id in package_list:
-                package_data = self.hashmap.get_package_data(package_id)
+                package_data = self.hashmap.get(package_id)
                 if not package_data:
                     print(f"Package data for package {package_id} not found.")
                     continue
