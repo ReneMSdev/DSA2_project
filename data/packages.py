@@ -2,6 +2,7 @@ import csv
 
 
 class Packages:
+    """Packages class uses no additional libraries or classes only csv for loading data"""
     # Define global variables for hashmap
     PACKAGE_ID = 0
     ADDRESS = 1
@@ -15,10 +16,8 @@ class Packages:
     NOTES = 9
 
     def __init__(self):
-        self.size = 64  # Initial size of hash map
-        self.map = [None] * self.size
-        self.count = 0  # Number of elements in the hashmap
-        self.resize_threshold = 0.7  # Resize hashmap when 70% full
+        self.size = 10  # Initial size of hash map
+        self.map = [[] for _ in range(self.size)]  # List of strings for separate chaining
         self._load_data_into_hashmap()
 
     def _load_data_into_hashmap(self):
@@ -33,71 +32,51 @@ class Packages:
 
                 if package_id.isdigit():  # Check if package_id is numeric to avoid errors.
                     data = row[:]  # Store all data from each column
-                    self.insert(package_id, data)
+                    self[package_id] = data
 
     def _hash(self, package_id):
         """hash function to compute hash index."""
-        # 'hash' function returns an integer hash value for a given key.
-        # % is a modulus operator to ensure the hash value fits within bounds of array.
-        # self.size represents the current capacity of the hashmap.
-        return hash(package_id) % self.size
+        return int(package_id) % self.size
 
-    def _resize(self):
-        """Resize the hashmap to allow more entries."""
-        print("Resizing map...")
-        old_map = self.map
-        self.size *= 2  # Double the size of the hashmap
-        self.map = [None] * self.size
-        self.count = 0  # Reset count before reinserting all elements
-
-        for item in old_map:
-            if item is not None:
-                self.insert(item[0], item[1])  # Reinsert into new map
-
-    def insert(self, package_id, data):
-        """Insert or update a data for given package_id in the hashmap"""
+    def __setitem__(self, package_id, data):
+        """ Insert or update data for given package_id in hashmap"""
         index = self._hash(package_id)
-        original_index = index
 
-        while self.map[index] is not None:
-            if self.map[index][self.PACKAGE_ID] == package_id:
-                # Update data if package_id already exists
-                self.map[index] = (package_id, data)
-                return
-            index = (index + 1) % self.size
-            if index == original_index:
-                # Table is full, resize
-                self._resize()
+        # Check if the package_id already exists in the chain
+        for i, entry in enumerate(self.map[index]):
+            if entry[0] == package_id:  # entry[0] is package_id
+                self.map[index][int(i)] = (package_id, data)  # Update the data
                 return
 
-        # Insert the new key and corresponding data
-        self.map[index] = (package_id, data)
-        self.count += 1
+        # if package_id not found, add the new entry
+        self.map[index].append((package_id, data))
 
-        # Check if resize is needed
-        if self.count / self.size >= self.resize_threshold:
-            self._resize()
-
-    def get(self, package_id):
-        """Get the value associated with a key."""
+    def __getitem__(self, package_id):
+        """Get the value associated with package_id"""
         index = self._hash(package_id)
-        original_index = index
 
-        while self.map[index] is not None:
-            if self.map[index][self.PACKAGE_ID] == package_id:
-                return self.map[index][1]  # 1 is index for data
-            index = (index + 1) % self.size
-            if index == original_index:
-                break
-
+        # Look for the package_id in the chain at given index
+        for entry in self.map[index]:
+            if entry[0] == package_id:
+                return entry[1]  # entry[1] is the data
         return None
+
+    def __delitem__(self, package_id):
+        """Remove the entry associated wih package_id"""
+        index = self._hash(package_id)
+
+        for entry in self.map[index]:
+            if entry[0] == package_id:
+                self.map[index].remove(entry)
+                return True  # Return true if deletion was successful
+        return False  # Return false if key was not found
 
     def get_all_packages(self):
         """ Return all non-None packages """
         all_packages = []
-        for entry in self.map:
-            if entry is not None:
-                all_packages.append(entry[1])  # entry[1] contains package data
+        for chain in self.map:
+            for pid, data in chain:  # for (package_id, data) in chain
+                all_packages.append(data)
 
         # Sort all packages by package ID
         all_packages.sort(key=lambda package: int(package[self.PACKAGE_ID]))
@@ -105,38 +84,40 @@ class Packages:
 
     def update_time_loaded(self, package_id, time_loaded):
         """Update the time loaded"""
-        data = self.get(package_id)
+        data = self[package_id]
         if data:
             # Update time loaded
             data[self.TIME_LOADED] = time_loaded
             # Update hashmap with new data
-            self.insert(package_id, data)
+            self[int(package_id)] = data
 
     def update_time_delivered(self, package_id, time_delivered):
-        data = self.get(package_id)
+        data = self[package_id]
         if data:
             # Update delivery time
             data[self.TIME_DELIVERED] = time_delivered
             # Update hashmap with new data
-            self.insert(package_id, data)
+            self[package_id] = data
 
     def update_truck_id(self, package_id, truck_id):
         """ Update the truck ID for a package """
-        data = self.get(package_id)
+        data = self[package_id]
         if data:
             # Update the truck id
             data.append(truck_id)
-            self.insert(package_id, data)
+            self[package_id] = data
 
     def display(self):
         """Display hashmap for debugging purposes."""
-        for index, item in enumerate(self.map):
-            if item:
-                print(f"Index {index}: {item}")
+        for index, chain in enumerate(self.map):
+            if chain:
+                print(f"Index {index}: {chain}")
             else:
                 print(f"Index {index}: Empty")
 
 
 """ Testing """
 # packages = Packages()
-# print(packages.get_package_data("1"))
+#
+# package_data = packages["1"]
+# print(f"Package data for ID '1': {package_data}")

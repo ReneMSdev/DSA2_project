@@ -1,4 +1,4 @@
-﻿pakage_id,address,city ,state,zip,"
+﻿package_id,address,city ,state,zip,"
 deadline",weight,time_loaded,time_delivered,notes
 1,195 W Oakland Ave,Salt Lake City,UT,84115,10:30 AM,21,,,
 2,2530 S 500 E,Salt Lake City,UT,84106,EOD,44,,,
@@ -8,7 +8,7 @@ deadline",weight,time_loaded,time_delivered,notes
 6,3060 Lester St,West Valley City,UT,84119,10:30 AM,88,,,
 7,1330 2100 S,Salt Lake City,UT,84106,EOD,8,,,
 8,300 State St,Salt Lake City,UT,84103,EOD,9,,,
-9,300 State St,Salt Lake City,UT,84103,EOD,2,,,Wrong address listed
+9,410 S State St,Salt Lake City,UT,84103,EOD,2,,,Wrong address listed
 10,600 E 900 South,Salt Lake City,UT,84105,EOD,1,,,
 11,2600 Taylorsville Blvd,Salt Lake City,UT,84118,EOD,1,,,
 12,3575 W Valley Central Station bus Loop,West Valley City,UT,84119,EOD,1,,,

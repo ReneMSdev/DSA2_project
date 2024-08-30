@@ -44,13 +44,10 @@ class DistanceCalculator:
 
         # Loop through each location to extract just the street address
         for location in locations:
-            parts = location.split('\n')
-            if len(parts) > 1:
-                street_address = parts[1].split(',')[0].strip()
-                cleaned_addresses.append(street_address)
-            else:
-                # If there's no newline in the string, append the original string
-                cleaned_addresses.append(location.strip())
+            # Remove newline characters and extra spaces, standardizing the address format
+            street_address = location.split('\n')[1] if '\n' in location else location
+            street_address = street_address.split(',')[0].strip()
+            cleaned_addresses.append(street_address)
 
         return cleaned_addresses
 
@@ -59,16 +56,22 @@ class DistanceCalculator:
         index1 = self.address_to_index.get(address1)
         index2 = self.address_to_index.get(address2)
 
-        if index1 is not None and index2 is not None:
-            # one of these variables will contain the real distance
-            distance1 = self.adjacency_matrix[index1, index2]
-            distance2 = self.adjacency_matrix[index2, index1]
+        if index1 is None or index2 is None:
+            print(f"Error: One or both addresses '{address1}' or '{address2}' not found")
+            return None
 
-            # Check to make sure 0.0 is not returned
-            if distance1 != 0.0:
-                return distance1
-            else:
-                return distance2
+        # one of these variables will contain the real distance
+        distance1 = self.adjacency_matrix[index1, index2]
+        distance2 = self.adjacency_matrix[index2, index1]
+
+        # Check to make sure 0.0 is not returned
+        if distance1 != 0.0:
+            return distance1
+        elif distance2 != 0.0:
+            return distance2
+        else:
+            print(f"Warning: Distance between '{address1}' and '{address2}' is 0.0 or not found.")
+            return None
 
 
 """ testing """

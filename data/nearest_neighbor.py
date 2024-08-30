@@ -11,8 +11,7 @@ class NearestNeighbor:
         self.hashmap = hashmap
 
     def calculate_route(self, package_list):
-        # initialize starting point
-        current_address = self.HUB
+        current_address = self.HUB  # initialize starting point
         route = []  # Initialize route array
         visited = set(route)  # Set to keep track of visited addresses
         total_distance = 0  # total distance traveled
@@ -22,7 +21,7 @@ class NearestNeighbor:
             shortest_distance = float('inf')  # Start with infinitely large distance
 
             for package_id in package_list:
-                package_data = self.hashmap.get(package_id)
+                package_data = self.hashmap[package_id]
                 if not package_data:
                     print(f"Package data for package {package_id} not found.")
                     continue
@@ -49,7 +48,7 @@ class NearestNeighbor:
                 current_address = nearest_address  # Move to the next address
                 # print(f"Nearest address found: {nearest_address} with distance: {shortest_distance}")
             else:
-                print("Nearest address not found")
+                # print("Nearest address not found")
                 break
 
         return route, total_distance
