@@ -103,7 +103,7 @@ class Truck:
 
         # prepare data
         report_data = [
-            ["Truck", f"Truck {self.truck_id}"],
+            ["Truck", f"{"\U0001F69A"} {self.truck_id}"],
             ["Total Distance", f"{total_distance} miles"],
             ["Start Time", start_time],
             ["End Time", current_time],

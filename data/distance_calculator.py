@@ -5,9 +5,9 @@ import numpy as np
 class DistanceCalculator:
     def __init__(self):
         self.file_path = 'data/csv_files/WGUPS Distance Table.csv'
-        self.address_to_index = {}
-        self.adjacency_matrix = None
-        self.cleaned_addresses = []
+        self.address_to_index = {}  # empty dictionary to store address indexes
+        self.adjacency_matrix = None  # initialize the matrix with NaN values
+        self.cleaned_addresses = []  # stores the cleaned addresses
         self._load_and_clean_data()  # Load data and process addresses
 
     def _load_and_clean_data(self):

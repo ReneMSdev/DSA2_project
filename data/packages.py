@@ -3,6 +3,9 @@ import csv
 
 class Packages:
     """Packages class uses no additional libraries or classes only csv for loading data"""
+    """__setitem__, __getitem__, __delitem__ are part of Python Data Model, not part of library or class"""
+    """They are functions supported by python for accessing items in objects, such as elements in a list"""
+    """map variable is set up to be a list of lists with chaining"""
     # Define global variables for hashmap
     PACKAGE_ID = 0
     ADDRESS = 1
@@ -18,6 +21,9 @@ class Packages:
     def __init__(self):
         self.size = 10  # Initial size of hash map
         self.map = [[] for _ in range(self.size)]  # List of strings for separate chaining
+        # ^^ allows handling for collisions
+        self.entry_count = 0  # Tracks the number of entries(rows of data) in the hashmap
+        self.resize_threshold = 0.8  # hashmap will resize if 80% full
         self._load_data_into_hashmap()
 
     def _load_data_into_hashmap(self):
@@ -32,15 +38,28 @@ class Packages:
 
                 if package_id.isdigit():  # Check if package_id is numeric to avoid errors.
                     data = row[:]  # Store all data from each column
-                    self[package_id] = data
+                    self[package_id] = data  # using __setitem__
 
     def _hash(self, package_id):
         """hash function to compute hash index."""
         return int(package_id) % self.size
 
+    def resize(self):
+        """Resize the hashmap when the resize threshold is hit"""
+        new_size = self.size * 2
+        new_map = [[] for _ in range(new_size)]  # creates new map from new size
+        # Rehash all existing entries
+        for chain in self.map:
+            for package_id, data in chain:
+                new_index = int(package_id) % new_size  # adjustment to hash key
+                new_map[new_index].append((package_id, data))  # adjusts data to new position
+
+        self.map = new_map  # updates the map
+        self.size = new_size  # updates the size of the map
+
     def __setitem__(self, package_id, data):
         """ Insert or update data for given package_id in hashmap"""
-        index = self._hash(package_id)
+        index = self._hash(package_id) # index is the hash created from package_id
 
         # Check if the package_id already exists in the chain
         for i, entry in enumerate(self.map[index]):
@@ -48,8 +67,13 @@ class Packages:
                 self.map[index][int(i)] = (package_id, data)  # Update the data
                 return
 
-        # if package_id not found, add the new entry
+        # if package_id not found, add the new entry on new row
         self.map[index].append((package_id, data))
+        self.entry_count += 1  # Increase entry count after adding new row of data
+
+        # Check if resize threshold is hit
+        if self.entry_count/self.size > self.resize_threshold:
+            self.resize()  # resize if resize threshold is hit
 
     def __getitem__(self, package_id):
         """Get the value associated with package_id"""
