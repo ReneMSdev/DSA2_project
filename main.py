@@ -1,8 +1,8 @@
 """ Student ID: 011913812 """
 from data.packages import Packages
-from truck import Truck
+from data.truck import Truck
 from datetime import datetime
-from lookup import lookup_packages_by_time
+from data.lookup import lookup_packages_by_time
 
 TIME_FORMAT = "%I:%M %p"
 
